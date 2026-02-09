@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --btn-width: 140px;
+    --btn-height: 46px;
+    --btn-font: 16px;
+}
+
+/* ================= BASE ================= */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffe6eb, #fff0f5);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    background: white;
+    padding: 40px 28px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    color: #ff4d6d;
+    margin-bottom: 24px;
+}
+
+.tease {
+    min-height: 22px;
+    color: #ff6f91;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+/* ================= BUTTON AREA ================= */
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    justify-items: center;
+}
+
+.buttons.center-yes {
+    grid-template-columns: 1fr;
+}
+
+.no-placeholder {
+    width: var(--btn-width);
+    height: var(--btn-height);
+}
+
+button {
+    width: var(--btn-width);
+    height: var(--btn-height);
+    font-size: var(--btn-font);
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+#yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+}
+
+#yesBtn:hover {
+    background-color: #ff3355;
+    transform: scale(1.05);
+}
+
+#noBtn {
+    background-color: #e0e0e0;
+    color: #333;
+    position: fixed;
+    transition: left 0.35s ease, top 0.35s ease;
+    z-index: 3;
+}
+
+.result {
+    margin-top: 24px;
+    font-size: 20px;
+    color: #ff4d6d;
+    display: none;
+}
+
+/* ================= SAKURA FALL ================= */
+.sakura-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.sakura {
+    position: absolute;
+    top: -40px;
+    font-size: 20px;
+    opacity: 0.9;
+    animation-name: sakuraFall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes sakuraFall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) translateX(60px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 480px) {
+    :root {
+        --btn-width: 120px;
+        --btn-height: 42px;
+        --btn-font: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sakura-container" id="sakuraContainer"></div>
+
+<div class="container">
+    <h1>Will you be my Valentine? 💖</h1>
+
+    <div class="tease" id="teaseText"></div>
+
+    <div class="buttons" id="buttonWrap">
+        <button id="yesBtn">Yes</button>
+        <div class="no-placeholder" id="noSlot"></div>
+    </div>
+
+    <div class="result" id="resultText">
+        YAYYY 💕 I knew it!!<br>
+        Happy Valentine 💘
+    </div>
+</div>
+
+<button id="noBtn">No</button>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const noSlot = document.getElementById("noSlot");
+const teaseText = document.getElementById("teaseText");
+const result = document.getElementById("resultText");
+const buttonWrap = document.getElementById("buttonWrap");
+const sakuraContainer = document.getElementById("sakuraContainer");
+
+let escapeCount = 0;
+
+const teaseMessages = [
+    "Ih kok mau nolak sih 😢",
+    "Yakin nih? 🤨",
+    "Eh kok lari? 😆",
+    "Udah deh, klik YES aja 💕",
+    "Capek tau ngejar kamu 😭"
+];
+
+function setInitialNoPosition() {
+    const rect = noSlot.getBoundingClientRect();
+    noBtn.style.left = rect.left + "px";
+    noBtn.style.top = rect.top + "px";
+}
+
+function moveNoButton() {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    teaseText.textContent = teaseMessages[escapeCount] || "Udah nyerah 😜";
+    escapeCount++;
+}
+
+window.addEventListener("load", setInitialNoPosition);
+window.addEventListener("resize", setInitialNoPosition);
+
+noBtn.addEventListener("mouseenter", moveNoButton);
+noBtn.addEventListener("click", moveNoButton);
+
+/* 🌸 SAKURA GENERATOR */
+function createSakura() {
+    const sakura = document.createElement("span");
+    sakura.classList.add("sakura");
+    sakura.textContent = "🌸";
+
+    sakura.style.left = Math.random() * 100 + "vw";
+    sakura.style.fontSize = 16 + Math.random() * 20 + "px";
+    sakura.style.animationDuration = 5 + Math.random() * 5 + "s";
+
+    sakuraContainer.appendChild(sakura);
+
+    setTimeout(() => {
+        sakura.remove();
+    }, 10000);
+}
+
+let sakuraInterval;
+
+yesBtn.addEventListener("click", () => {
+    result.style.display = "block";
+    teaseText.textContent = "";
+    noBtn.style.display = "none";
+    noSlot.style.display = "none";
+    buttonWrap.classList.add("center-yes");
+
+    // mulai hujan sakura 🌸
+    sakuraInterval = setInterval(createSakura, 350);
+});
+</script>
+
+</body>
+</html>
